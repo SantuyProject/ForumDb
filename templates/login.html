@@ -10,8 +10,6 @@
   </head>
   <body>
 
-
-
 <script type="text/javascript" charset="utf-8">
   Swal.fire({
   title: 'Confirm',
@@ -30,104 +28,227 @@
 <script type="text/javascript">
 async function mulai(){
   
-  var { value: nama } = await Swal.fire({
-    title: 'nama kamu? jan pake spasi ya cuy untuk mengurangi resiko eror',
+//   var { value: nama } = await Swal.fire({
+//     title: 'nama kamu? jan pake spasi ya cuy untuk mengurangi resiko eror',
+//     input: 'text',
+//     confirmButtonText: 'Lanjut',
+//     showCancelButton: false,
+// });
+
+var { value: nama } = await Swal.fire({
+    title: 'Nama kamu?',
     input: 'text',
     confirmButtonText: 'Lanjut',
     showCancelButton: false,
+    inputValidator: (value) => {
+        if (!value) {
+            return 'Nama harus diisi!'
+        } else if (/\s/.test(value)) {
+            return 'Nama tidak boleh mengandung spasi!'
+        }
+    }
 });
 
 //NAHH JADI SAYA TUH PENGEN NGE AJAX JUGA SI INPUT WHATSAPP NYA JUGA CUMAN EROR CUY ANEH
 
-  var { value: WhatsApp} = await Swal.fire({
-    title: 'nomer WhatsApp',
-    input: 'text',
-    confirmButtonText: 'Lanjut',
-    showCancelButton: false,
-    inputAttributes: {
-      maxlength: 14,
-      minlength:10
+// var { value: WhatsApp} = await Swal.fire({
+//     title: 'nomer WhatsApp',
+//     input: 'text',
+//     confirmButtonText: 'Lanjut',
+//     showCancelButton: false,
+//     inputAttributes: {
+//       maxlength: 14,
+//       minlength:10
+//     }
+    
+// });
+
+if (nama) { // jika input nama terisi
+window.nama = nama;
+
+var { value: WhatsApp } = await Swal.fire({
+title: 'nomer WhatsApp',
+input: 'text',
+confirmButtonText: 'Lanjut',
+showCancelButton: false,
+inputAttributes: {
+maxlength: 14,
+minlength: 10
+}
+});
+
+if (WhatsApp) { // jika input WhatsApp terisi
+window.WhatsApp = WhatsApp;
+// konfirmasi
+var { value: confirnama } = await Swal.fire({
+  title: 'konfirmasi?',
+  text: `nama kamu: ${nama}\nWhatsApp kamu: ${WhatsApp}`,
+  confirmButtonText: 'Submit',
+  showCancelButton: true,
+});
+
+if (confirnama) { // jika konfirmasi diterima
+  // kode untuk mengirim nilai input nama dan WhatsApp ke Flask menggunakan AJAX
+  $.ajax({
+    url: '/input',
+    type: 'POST',
+    data: {
+      'inputValueNama': nama,
+      'inputValueWa': WhatsApp
+    },
+    success: function(response) {
+      // kode untuk menampilkan pesan sukses
+      Swal.fire({
+        title: 'Success',
+        text: 'DatabBase Mu berhasil di buatkan kini isi nomer WhatsApp kamu untuk menerima pesan ',
+        icon: 'success'
+      });
     }
-    
-});
-//window.nama = nama;
-//window.WhatsApp = wa;
-
+  });
+}
+} else { // jika input WhatsApp kosong
+await Swal.fire('ups input tidak boleh kosong, ya!');
+mulai();
+}
+} else { // jika input nama kosong
+await Swal.fire('ups input tidak boleh kosong, ya!');
+mulai();
+}
+}
  
- if(nama){//jika input user terisi
-    window.nama = nama;
-    window.WhatsApp = WhatsApp;
+//  if(nama){//jika input user terisi
+//     window.nama = nama;
+//     window.WhatsApp = WhatsApp;
     
-    //INI SUBMIT DAN POST NYA NAMA
+//     //INI SUBMIT DAN POST NYA NAMA
     
-  var { value: confirnama } = await  Swal.fire({//konfirmasi
-  title: 'konfirmasi?',
-  input: "text",//ini nanti nya gk bakal pake input tapi pake text biasa
-  inputValue:nama,
+//   var { value: confirnama } = await  Swal.fire({//konfirmasi
+//   title: 'konfirmasi?',
+//   input: "text",//ini nanti nya gk bakal pake input tapi pake text biasa
+//   inputValue:nama,
   
-  inputLabel: 'Enter a value',
-  confirmButtonText: 'Submit',
+//   inputLabel: 'Enter a value',
+//   confirmButtonText: 'Submit',
   
-}).then((result) => {
-  if (result.isConfirmed) {
-    // kode yang akan dijalankan jika user menekan tombol confirm
-    var inputValue = result.value;
-    // kode untuk mengirim nilai input ke Flask menggunakan AJAX
-    $.ajax({
-      url: '/input',
-      type: 'POST',
-      data: {'inputValueNama': inputValue},
-      success: function(response) {
-        // kode untuk menampilkan pesan sukses
+// }).then((result) => {
+//   if (result.isConfirmed) {
+//     // kode yang akan dijalankan jika user menekan tombol confirm
+//     var inputValue = result.value;
+//     // kode untuk mengirim nilai input ke Flask menggunakan AJAX
+//     $.ajax({
+//       url: '/input',
+//       type: 'POST',
+//       data: {'inputValueNama': inputValue},
+//       success: function(response) {
+//         // kode untuk menampilkan pesan sukses
         
-Swal.fire({
-          title: 'Success',
-          text: 'DatabBase Mu berhasil di buatkan kini isi nomer WhatsApp kamu untuk menerima pesan ',
-          icon: 'success'
-        });
-      }
-    });
-  }
-});
+// Swal.fire({
+//           title: 'Success',
+//           text: 'DatabBase Mu berhasil di buatkan kini isi nomer WhatsApp kamu untuk menerima pesan ',
+//           icon: 'success'
+//         });
+//       }
+//     });
+//   }
+// });
 
+// if (nama) { // jika input user terisi
+// window.nama = nama;
 
-//INI SUBMIT DAN POST UNTUK WA GK TAU INI KALO BISA DI SATUIN SAMA YANG NAMA SATUIN AJA TAPI SAYA YANG COBA GK BISA GK TAU KALO SENSEI YANG NYOBA
-var { value: confirnama } = await  Swal.fire({//konfirmasi
-  title: 'konfirmasi?',
-  input: "text",//ini nanti nya gk bakal pake input tapi pake text biasa
-  inputValue:WhatsApp,
+// var { value: WhatsApp} = await Swal.fire({
+// title: 'Nomor WhatsApp kamu?',
+// input: 'text',
+// confirmButtonText: 'Lanjut',
+// showCancelButton: false,
+// inputValidator: (value) => {
+// if (!value) {
+// return 'Kamu belum mengisi nomor WhatsApp!'
+// }
+// },
+// inputAttributes: {
+// maxlength: 14,
+// minlength: 10
+// }
+// });
+
+// if (WhatsApp) { // jika input nomor WhatsApp terisi
+// window.WhatsApp = WhatsApp;
+// // konfirmasi
+// // konfirmasi
+// var { value: confirnama } = await Swal.fire({
+//   title: 'Konfirmasi',
+//   text: `Apakah kamu yakin ingin memasukkan nama "${nama}" dan nomor WhatsApp "${WhatsApp}"?`,
+//   icon: 'warning',
+//   showCancelButton: true,
+//   confirmButtonText: 'Ya',
+//   cancelButtonText: 'Batal'
+// });
+
+// if (confirnama) { // jika user mengkonfirmasi
+//   // mengirim data ke server menggunakan AJAX
+//   $.ajax({
+//     url: '/input',
+//     type: 'POST',
+//     data: {
+//       'inputValueNama': nama,
+//       'inputValueWhatsApp': WhatsApp
+//     },
+//     success: function(response) {
+//       Swal.fire({
+//         title: 'Sukses',
+//         text: 'Database kamu berhasil dibuat. Silakan isi nomor telepon untuk menerima pesan.',
+//         icon: 'success'
+//       });
+//     },
+//     error: function(response) {
+//       Swal.fire({
+//         title: 'Error',
+//         text: 'Terjadi kesalahan saat memproses permintaan. Silakan coba lagi.',
+//         icon: 'error'
+//       });
+//     }
+//   });
+// }
+// }
+// }
+
+// //INI SUBMIT DAN POST UNTUK WA GK TAU INI KALO BISA DI SATUIN SAMA YANG NAMA SATUIN AJA TAPI SAYA YANG COBA GK BISA GK TAU KALO SENSEI YANG NYOBA
+// var { value: confirnama } = await  Swal.fire({//konfirmasi
+//   title: 'konfirmasi?',
+//   input: "text",//ini nanti nya gk bakal pake input tapi pake text biasa
+//   inputValue:WhatsApp,
   
-  inputLabel: 'Enter a value',
-  confirmButtonText: 'Submit',
+//   inputLabel: 'Enter a value',
+//   confirmButtonText: 'Submit',
   
-}).then((result) => {
-  if (result.isConfirmed) {
-    // kode yang akan dijalankan jika user menekan tombol confirm
-    var inputValue = result.value;
-    // kode untuk mengirim nilai input ke Flask menggunakan AJAX
-    $.ajax({
-      url: '/input',
-      type: 'POST',
-      data: {'inputValueWa': inputValue},
-      success: function(response) {
-        // kode untuk menampilkan pesan sukses
+// }).then((result) => {
+//   if (result.isConfirmed) {
+//     // kode yang akan dijalankan jika user menekan tombol confirm
+//     var inputValue = result.value;
+//     // kode untuk mengirim nilai input ke Flask menggunakan AJAX
+//     $.ajax({
+//       url: '/input',
+//       type: 'POST',
+//       data: {'inputValueWa': inputValue},
+//       success: function(response) {
+//         // kode untuk menampilkan pesan sukses
         
-Swal.fire({
-          title: 'Success',
-          text: ' lorem isum kolor nya si amet',
-          icon: 'success'
-        });
-      }
-    });
-  }
-});
+// Swal.fire({
+//           title: 'Success',
+//           text: ' lorem isum kolor nya si amet',
+//           icon: 'success'
+//         });
+//       }
+//     });
+//   }
+// });
 
-  }else if(nama === ""){//jika input user kosong
-    await Swal.fire('ups input tidak boleh kosong, ya!');
-    mulai();
-  }
+//   }else if(nama === ""){//jika input user kosong
+//     await Swal.fire('ups input tidak boleh kosong, ya!');
+//     mulai();
+//   }
 
-}//endfunction
+// }//endfunction
 </script>
 
 
