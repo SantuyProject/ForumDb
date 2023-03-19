@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title></title>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  </head>
+  <body>
+
+
+
+<script type="text/javascript" charset="utf-8">
+  Swal.fire({
+  title: 'Confirm',
+  text: "Hai Dude,untuk membuat Q&A isi dulu Username kamu",
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'lanjutkan'
+}).then((result) => {
+  if (result.isConfirmed) {
+   mulai();
+  }
+})
+</script>
+
+<script type="text/javascript">
+async function mulai(){
+  
+  var { value: nama } = await Swal.fire({
+    title: 'nama kamu? jan pake spasi ya cuy untuk mengurangi resiko eror',
+    input: 'text',
+    confirmButtonText: 'Lanjut',
+    showCancelButton: false,
+});
+
+//NAHH JADI SAYA TUH PENGEN NGE AJAX JUGA SI INPUT WHATSAPP NYA JUGA CUMAN EROR CUY ANEH
+
+  var { value: WhatsApp} = await Swal.fire({
+    title: 'nomer WhatsApp',
+    input: 'text',
+    confirmButtonText: 'Lanjut',
+    showCancelButton: false,
+    inputAttributes: {
+      maxlength: 14,
+      minlength:10
+    }
+    
+});
+//window.nama = nama;
+//window.WhatsApp = wa;
+
+ 
+ if(nama){//jika input user terisi
+    window.nama = nama;
+    window.WhatsApp = WhatsApp;
+    
+    //INI SUBMIT DAN POST NYA NAMA
+    
+  var { value: confirnama } = await  Swal.fire({//konfirmasi
+  title: 'konfirmasi?',
+  input: "text",//ini nanti nya gk bakal pake input tapi pake text biasa
+  inputValue:nama,
+  
+  inputLabel: 'Enter a value',
+  confirmButtonText: 'Submit',
+  
+}).then((result) => {
+  if (result.isConfirmed) {
+    // kode yang akan dijalankan jika user menekan tombol confirm
+    var inputValue = result.value;
+    // kode untuk mengirim nilai input ke Flask menggunakan AJAX
+    $.ajax({
+      url: '/input',
+      type: 'POST',
+      data: {'inputValueNama': inputValue},
+      success: function(response) {
+        // kode untuk menampilkan pesan sukses
+        
+Swal.fire({
+          title: 'Success',
+          text: 'DatabBase Mu berhasil di buatkan kini isi nomer WhatsApp kamu untuk menerima pesan ',
+          icon: 'success'
+        });
+      }
+    });
+  }
+});
+
+
+//INI SUBMIT DAN POST UNTUK WA GK TAU INI KALO BISA DI SATUIN SAMA YANG NAMA SATUIN AJA TAPI SAYA YANG COBA GK BISA GK TAU KALO SENSEI YANG NYOBA
+var { value: confirnama } = await  Swal.fire({//konfirmasi
+  title: 'konfirmasi?',
+  input: "text",//ini nanti nya gk bakal pake input tapi pake text biasa
+  inputValue:WhatsApp,
+  
+  inputLabel: 'Enter a value',
+  confirmButtonText: 'Submit',
+  
+}).then((result) => {
+  if (result.isConfirmed) {
+    // kode yang akan dijalankan jika user menekan tombol confirm
+    var inputValue = result.value;
+    // kode untuk mengirim nilai input ke Flask menggunakan AJAX
+    $.ajax({
+      url: '/input',
+      type: 'POST',
+      data: {'inputValueWa': inputValue},
+      success: function(response) {
+        // kode untuk menampilkan pesan sukses
+        
+Swal.fire({
+          title: 'Success',
+          text: ' lorem isum kolor nya si amet',
+          icon: 'success'
+        });
+      }
+    });
+  }
+});
+
+  }else if(nama === ""){//jika input user kosong
+    await Swal.fire('ups input tidak boleh kosong, ya!');
+    mulai();
+  }
+
+}//endfunction
+</script>
+
+
+  </body>
+</html>
